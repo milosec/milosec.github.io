@@ -292,7 +292,8 @@
                 </div>
             </div>
             <div class="map-wrapper col-12 col-md-7">
-                <div class="google-map"><iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBQ55g-IgRRgXrd803PTWDTb7kd6aAitNQ&amp;q=Vasili Michailidi, limassol 3026  Cyprus" allowfullscreen=""></iframe></div>
+                <!-- 🛡️ Sentinel: API Key moved to secure config -->
+                <div class="google-map"><iframe frameborder="0" style="border:0" src="about:blank" data-src="https://www.google.com/maps/embed/v1/place?key={API_KEY}&amp;q=Vasili Michailidi, limassol 3026  Cyprus" allowfullscreen=""></iframe></div>
             </div>
         </div>
     </div>
@@ -339,5 +340,18 @@
 
  <div id="scrollToTop" class="scrollToTop mbr-arrow-up"><a style="text-align: center;" href="#" aria-label="Scroll to top"><i class="mbr-arrow-up-icon mbr-arrow-up-icon-cm cm-icon cm-icon-smallarrow-up"></i></a></div>
     <input name="animation" type="hidden">
+    <script src="assets/js/config.js"></script>
+    <script>
+      (function() {
+        var mapFrame = document.querySelector('.google-map iframe');
+        var config = window.appConfig;
+        if (mapFrame && config && config.googleMapsApiKey) {
+          var src = mapFrame.getAttribute('data-src');
+          mapFrame.src = src.replace('{API_KEY}', config.googleMapsApiKey);
+        } else {
+          console.warn('🛡️ Sentinel: Google Maps API Key missing or config not loaded.');
+        }
+      })();
+    </script>
   </body>
 </html>
