@@ -292,7 +292,8 @@
                 </div>
             </div>
             <div class="map-wrapper col-12 col-md-7">
-                <div class="google-map"><iframe frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBQ55g-IgRRgXrd803PTWDTb7kd6aAitNQ&amp;q=Vasili Michailidi, limassol 3026  Cyprus" allowfullscreen=""></iframe></div>
+                <!-- 🛡️ Sentinel: Removed hardcoded API key. Uses assets/js/map-loader.js -->
+                <div class="google-map"><iframe frameborder="0" style="border:0" data-src="https://www.google.com/maps/embed/v1/place?key=KEY_PLACEHOLDER&amp;q=Vasili Michailidi, limassol 3026  Cyprus" allowfullscreen=""></iframe></div>
             </div>
         </div>
     </div>
@@ -339,5 +340,9 @@
 
  <div id="scrollToTop" class="scrollToTop mbr-arrow-up"><a style="text-align: center;" href="#" aria-label="Scroll to top"><i class="mbr-arrow-up-icon mbr-arrow-up-icon-cm cm-icon cm-icon-smallarrow-up"></i></a></div>
     <input name="animation" type="hidden">
+
+    <!-- 🛡️ Sentinel: Security Scripts -->
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/map-loader.js"></script>
   </body>
 </html>
