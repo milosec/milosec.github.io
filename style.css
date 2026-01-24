@@ -85,6 +85,8 @@ ul {
     color: #000;
     position: relative;
     z-index: 1;
+    border: none;
+    backdrop-filter: none;
 }
 
 .btn-primary::before {
@@ -221,6 +223,10 @@ ul {
     max-width: 600px;
     margin-bottom: 40px;
     font-weight: 300;
+}
+
+.hero-cta {
+    text-align: center;
 }
 
 /* Services / Shared Sections */

@@ -35,7 +35,7 @@
 			<a href="#" class="logo">MiloSec Consulting</a>
 			<ul class="nav-links">
 				<li><a href="#services">Services</a></li>
-				<li><a href="#about">The Advantage</a></li>
+				<li><a href="#about">Why Us</a></li>
 				<li><a href="#contact">Contact</a></li>
 			</ul>
 		</div>
@@ -49,9 +49,7 @@
 			<p class="hero-subtitle">Accelerate your transformation with next-gen IT architecture, cognitive security,
 				and data-driven intelligence. We build the digital backbone for tomorrow's market leaders.</p>
 			<div class="hero-cta">
-				<a href="#contact" class="btn btn-primary">Start Transformation</a>
-				<a href="#services" class="btn btn-outline"
-					style="margin-left: 1rem; color: var(--text-secondary);">Explore Solutions</a>
+				<a href="#services" class="btn btn-primary">Explore Services</a>
 			</div>
 		</div>
 	</section>
@@ -157,7 +155,8 @@
 				<div class="contact-card">
 					<div class="icon-box"><span aria-hidden="true">📧</span></div>
 					<h3>Email Us</h3>
-					<p><a href="mailto:info@milosec.com" class="contact-link">info@milosec.com</a></p>
+					<p><a href="#" class="contact-link" data-user="info" data-domain="milosec.com">info@milosec.com</a>
+					</p>
 				</div>
 				<div class="contact-card">
 					<div class="icon-box"><span aria-hidden="true">🕒</span></div>
@@ -179,7 +178,7 @@
 				</div>
 				<div class="footer-links">
 					<a href="#services">Services</a>
-					<a href="#about">The Advantage</a>
+					<a href="#about">Why Us</a>
 					<a href="#contact">Contact</a>
 					<a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a>
 				</div>
@@ -209,6 +208,16 @@
 				document.querySelector(this.getAttribute('href')).scrollIntoView({
 					behavior: 'smooth'
 				});
+			});
+		});
+
+		// Email Obfuscation
+		document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
+			link.addEventListener('click', function (e) {
+				e.preventDefault();
+				const user = this.getAttribute('data-user');
+				const domain = this.getAttribute('data-domain');
+				window.location.href = `mailto:${user}@${domain}`;
 			});
 		});
 	</script>
