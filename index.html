@@ -17,7 +17,7 @@
 
 	<!-- Meta/SEO -->
 	<meta http-equiv="Content-Security-Policy"
-		content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';">
+		content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';">
 	<meta name="referrer" content="strict-origin-when-cross-origin">
 	<meta name="description" content="Strategic IT Consulting, Architecture, Security, and Transformation Services.">
 </head>
@@ -34,9 +34,6 @@
 	<nav class="navbar">
 		<div class="container nav-container">
 			<a href="#" class="logo">MiloSec Consulting</a>
-			<button class="mobile-menu-btn" aria-label="Toggle navigation" aria-expanded="false">
-				<span></span><span></span><span></span>
-			</button>
 			<ul class="nav-links">
 				<li><a href="#services">Services</a></li>
 				<li><a href="#about">Why Us</a></li>
@@ -194,57 +191,7 @@
 	</footer>
 
 	<!-- Interactive Script -->
-	<script>
-		document.addEventListener('mousemove', e => {
-			document.querySelectorAll('.card').forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = e.clientX - rect.left;
-				const y = e.clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-		});
-
-		// Smooth scroll for anchor links
-		document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-			anchor.addEventListener('click', function (e) {
-				e.preventDefault();
-				document.querySelector(this.getAttribute('href')).scrollIntoView({
-					behavior: 'smooth'
-				});
-			});
-		});
-
-		// Email Obfuscation
-		document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
-			link.addEventListener('click', function (e) {
-				e.preventDefault();
-				const user = this.getAttribute('data-user');
-				const domain = this.getAttribute('data-domain');
-				window.location.href = `mailto:${user}@${domain}`;
-			});
-		});
-
-		// Mobile Menu Toggle
-		const mobileBtn = document.querySelector('.mobile-menu-btn');
-		const navLinks = document.querySelector('.nav-links');
-
-		if (mobileBtn && navLinks) {
-			mobileBtn.addEventListener('click', () => {
-				const isExpanded = mobileBtn.getAttribute('aria-expanded') === 'true';
-				mobileBtn.setAttribute('aria-expanded', !isExpanded);
-				navLinks.classList.toggle('active');
-			});
-
-			// Close menu when a link is clicked
-			navLinks.querySelectorAll('a').forEach(link => {
-				link.addEventListener('click', () => {
-					mobileBtn.setAttribute('aria-expanded', 'false');
-					navLinks.classList.remove('active');
-				});
-			});
-		}
-	</script>
+	<script src="assets/js/custom.js"></script>
 </body>
 
 </html>
