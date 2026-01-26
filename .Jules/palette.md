@@ -7,3 +7,7 @@
 ## 2024-05-24 - Accessibility of Emoji Icons
 **Learning:** The site uses raw emojis (e.g., 📍, 📧) as decorative icons in the "Contact" section. Screen readers announce these (e.g., "Round Pushpin"), which can be redundant or distracting when followed immediately by the text label.
 **Action:** Wrap purely decorative emojis in `<span aria-hidden="true">` to prevent screen reader announcement, or provide `role="img"` with `aria-label` if they convey unique meaning.
+
+## 2024-05-24 - Mobile Menu State Management
+**Learning:** When implementing custom JavaScript toggles for mobile menus (especially those that lock body scrolling), failing to reset the state on window resize leads to broken UX on desktop (locked scroll) if the user resizes the window.
+**Action:** Always include a `resize` event listener that checks `window.innerWidth` and resets the menu state (removes active classes, resets aria-expanded, restores body scroll) when crossing the mobile breakpoint.

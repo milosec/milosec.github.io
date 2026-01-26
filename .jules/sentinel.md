@@ -7,3 +7,8 @@
 **Vulnerability:** Manual security hardening in `index.html` (like CSP headers) is overwritten upon Mobirise regeneration.
 **Learning:** Mobirise stores `<head>` injections in the `header_custom` JSON field within `project.mobirise`. This field is often empty by default.
 **Prevention:** Always mirror security meta tags added to `index.html` into the `header_custom` field in `project.mobirise`.
+
+## 2026-01-25 - CSP Hardening & Inline Scripts
+**Vulnerability:** Inline JavaScript requires `script-src 'unsafe-inline'`, which enables XSS.
+**Learning:** Mobirise generates inline scripts by default. To harden CSP, these must be extracted to external files. However, `project.mobirise` must also be updated to ensure the `header_custom` field (containing the CSP meta tag) matches the `index.html` changes.
+**Prevention:** Extract inline scripts to `assets/js/`, verify they load correctly (paying attention to `file://` protocol nuances during testing), and update both `index.html` and `project.mobirise`.
