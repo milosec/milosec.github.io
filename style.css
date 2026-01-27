@@ -469,3 +469,20 @@ footer {
         gap: 20px;
     }
 }
+/* Sentinel Security Hardening */
+.card-accent-primary {
+    border-color: var(--accent-primary) !important;
+}
+
+.card-accent-secondary {
+    border-color: var(--accent-secondary) !important;
+}
+
+.card-accent-white {
+    border-color: #fff !important;
+}
+
+.footer-desc {
+    color: var(--text-secondary);
+    max-width: 300px;
+}
