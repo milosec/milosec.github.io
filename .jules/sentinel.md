@@ -12,3 +12,8 @@
 **Vulnerability:** Inline JavaScript requires `script-src 'unsafe-inline'`, which enables XSS.
 **Learning:** Mobirise generates inline scripts by default. To harden CSP, these must be extracted to external files. However, `project.mobirise` must also be updated to ensure the `header_custom` field (containing the CSP meta tag) matches the `index.html` changes.
 **Prevention:** Extract inline scripts to `assets/js/`, verify they load correctly (paying attention to `file://` protocol nuances during testing), and update both `index.html` and `project.mobirise`.
+
+## 2026-02-10 - CSP Hardening: Styles & Specificity
+**Vulnerability:** `style-src 'unsafe-inline'` weakens CSP, allowing potential CSS injection attacks.
+**Learning:** Refactoring inline styles to CSS classes allows removing `'unsafe-inline'`. However, ensuring the new classes override existing framework styles might require `!important` or higher specificity selectors when working with generated codebases like Mobirise.
+**Prevention:** Systematically replace inline styles with utility classes and verify visual regressions. Update CSP to remove `'unsafe-inline'` for `style-src`.
