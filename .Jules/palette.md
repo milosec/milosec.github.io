@@ -11,3 +11,7 @@
 ## 2024-05-24 - Mobile Menu State Management
 **Learning:** When implementing custom JavaScript toggles for mobile menus (especially those that lock body scrolling), failing to reset the state on window resize leads to broken UX on desktop (locked scroll) if the user resizes the window.
 **Action:** Always include a `resize` event listener that checks `window.innerWidth` and resets the menu state (removes active classes, resets aria-expanded, restores body scroll) when crossing the mobile breakpoint.
+
+## 2024-05-25 - Skip to Content Links
+**Learning:** Static site templates often omit "Skip to content" links, forcing keyboard users to tab through the entire navigation menu on every page load. This is a critical WCAG failure (2.4.1).
+**Action:** Always verify the presence of a skip link. If missing, inject an anchor tag immediately after `<body>` and target the main content container (e.g., `#main-content`) with a visually hidden, focus-visible utility class.
