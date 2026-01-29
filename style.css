@@ -469,8 +469,20 @@ footer {
         gap: 20px;
     }
 }
-/* CSP Utilities */
-.card-border-primary { border-color: var(--accent-primary); }
-.card-border-secondary { border-color: var(--accent-secondary); }
-.card-border-white { border-color: #fff; }
-.footer-text-limit { color: var(--text-secondary); max-width: 300px; }
+/* Sentinel Security Hardening */
+.card-accent-primary {
+    border-color: var(--accent-primary) !important;
+}
+
+.card-accent-secondary {
+    border-color: var(--accent-secondary) !important;
+}
+
+.card-accent-white {
+    border-color: #fff !important;
+}
+
+.footer-desc {
+    color: var(--text-secondary);
+    max-width: 300px;
+}
