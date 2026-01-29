@@ -12,6 +12,6 @@
 **Learning:** When implementing custom JavaScript toggles for mobile menus (especially those that lock body scrolling), failing to reset the state on window resize leads to broken UX on desktop (locked scroll) if the user resizes the window.
 **Action:** Always include a `resize` event listener that checks `window.innerWidth` and resets the menu state (removes active classes, resets aria-expanded, restores body scroll) when crossing the mobile breakpoint.
 
-## 2024-05-24 - Keyboard Navigation Essentials
-**Learning:** Static sites often lack basic keyboard accessibility features like Skip Links and focus indicators. Adding a hidden-until-focused "Skip to content" link and global `:focus-visible` styles provides a massive accessibility win with minimal code.
-**Action:** For every project, check for a "Skip to content" link as the first child of `body` and ensure interactive elements have a visible focus state that matches the brand's accent color.
+## 2024-05-25 - Skip to Content Links
+**Learning:** Static site templates often omit "Skip to content" links, forcing keyboard users to tab through the entire navigation menu on every page load. This is a critical WCAG failure (2.4.1).
+**Action:** Always verify the presence of a skip link. If missing, inject an anchor tag immediately after `<body>` and target the main content container (e.g., `#main-content`) with a visually hidden, focus-visible utility class.
