@@ -1,11 +1,26 @@
+// Performance optimization: Cache card elements and use requestAnimationFrame
+// to prevent layout thrashing and excessive repaints on mousemove.
+const cards = document.querySelectorAll('.card');
+let ticking = false;
+
 document.addEventListener('mousemove', e => {
-	document.querySelectorAll('.card').forEach(card => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
-		card.style.setProperty('--mouse-x', `${x}px`);
-		card.style.setProperty('--mouse-y', `${y}px`);
-	});
+	if (!ticking) {
+		const clientX = e.clientX;
+		const clientY = e.clientY;
+
+		requestAnimationFrame(() => {
+			cards.forEach(card => {
+				const rect = card.getBoundingClientRect();
+				const x = clientX - rect.left;
+				const y = clientY - rect.top;
+				card.style.setProperty('--mouse-x', `${x}px`);
+				card.style.setProperty('--mouse-y', `${y}px`);
+			});
+			ticking = false;
+		});
+
+		ticking = true;
+	}
 });
 
 // Smooth scroll for anchor links
