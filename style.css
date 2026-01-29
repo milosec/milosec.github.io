@@ -469,39 +469,8 @@ footer {
         gap: 20px;
     }
 }
-/* Accessibility Improvements */
-.skip-link {
-    position: absolute;
-    top: -9999px;
-    left: 20px;
-    z-index: 2000;
-    padding: 12px 24px;
-    background: var(--accent-primary);
-    color: #000;
-    font-weight: 700;
-    text-decoration: none;
-    border-radius: 0 0 8px 8px;
-    box-shadow: 0 4px 20px rgba(0, 243, 255, 0.4);
-    transition: top 0.3s ease;
-}
-
-.skip-link:focus {
-    top: 0;
-    outline: 2px solid #fff;
-    outline-offset: -2px;
-}
-
-:focus-visible {
-    outline: 2px solid var(--accent-primary);
-    outline-offset: 4px;
-    border-radius: 2px;
-}
-
-.btn:focus-visible {
-    outline-offset: 2px;
-}
-
-.mobile-menu-toggle:focus-visible {
-    outline: 2px solid var(--accent-primary);
-    border-radius: 4px;
-}
+/* CSP Utilities */
+.card-border-primary { border-color: var(--accent-primary); }
+.card-border-secondary { border-color: var(--accent-secondary); }
+.card-border-white { border-color: #fff; }
+.footer-text-limit { color: var(--text-secondary); max-width: 300px; }
