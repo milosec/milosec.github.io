@@ -485,5 +485,25 @@ footer {
 
 .skip-link:focus {
     top: 0;
-    outline: 3px solid #fff;
+    outline: 3px solid #fff !important;
+}
+
+/* Accessibility: Global Focus Styles */
+:focus-visible {
+    outline: 2px solid var(--accent-primary) !important;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+/* Card Accents */
+.card-accent-primary {
+    border-top: 2px solid var(--accent-primary);
+}
+
+.card-accent-secondary {
+    border-top: 2px solid var(--accent-secondary);
+}
+
+.card-accent-white {
+    border-top: 2px solid #fff;
 }
