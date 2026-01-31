@@ -15,3 +15,7 @@
 ## 2024-05-25 - Skip to Content Links
 **Learning:** Static site templates often omit "Skip to content" links, forcing keyboard users to tab through the entire navigation menu on every page load. This is a critical WCAG failure (2.4.1).
 **Action:** Always verify the presence of a skip link. If missing, inject an anchor tag immediately after `<body>` and target the main content container (e.g., `#main-content`) with a visually hidden, focus-visible utility class.
+
+## 2024-05-26 - Dark Mode Focus Styles
+**Learning:** Dark mode sites often neglect focus states, making the default browser focus ring invisible against dark backgrounds.
+**Action:** Always ensure high-contrast focus styles (e.g., cyan/yellow on dark) are defined globally using `:focus-visible`.
