@@ -487,3 +487,8 @@ footer {
     top: 0;
     outline: 3px solid #fff;
 }
+
+:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 4px;
+}
