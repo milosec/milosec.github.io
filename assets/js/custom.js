@@ -1,10 +1,18 @@
-document.addEventListener('mousemove', e => {
-	document.querySelectorAll('.card').forEach(card => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
-		card.style.setProperty('--mouse-x', `${x}px`);
-		card.style.setProperty('--mouse-y', `${y}px`);
+// Optimized mousemove effect: Scoped listeners + RequestAnimationFrame
+document.querySelectorAll('.card').forEach(card => {
+	let ticking = false;
+	card.addEventListener('mousemove', e => {
+		if (!ticking) {
+			window.requestAnimationFrame(() => {
+				const rect = card.getBoundingClientRect();
+				const x = e.clientX - rect.left;
+				const y = e.clientY - rect.top;
+				card.style.setProperty('--mouse-x', `${x}px`);
+				card.style.setProperty('--mouse-y', `${y}px`);
+				ticking = false;
+			});
+			ticking = true;
+		}
 	});
 });
 
