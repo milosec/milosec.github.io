@@ -1,12 +1,23 @@
-// Performance optimization: Cache card elements and use requestAnimationFrame
-// to prevent layout thrashing and excessive repaints on mousemove.
-const cards = document.querySelectorAll('.card');
-let ticking = false;
-
-document.addEventListener('mousemove', e => {
-	if (!ticking) {
-		const clientX = e.clientX;
-		const clientY = e.clientY;
+// Optimized mousemove handling for cards
+// Uses scoped event listeners and requestAnimationFrame to prevent layout thrashing
+document.querySelectorAll('.card').forEach(card => {
+	let ticking = false;
+	card.addEventListener('mousemove', (e) => {
+		if (!ticking) {
+			const clientX = e.clientX;
+			const clientY = e.clientY;
+			window.requestAnimationFrame(() => {
+				const rect = card.getBoundingClientRect();
+				const x = clientX - rect.left;
+				const y = clientY - rect.top;
+				card.style.setProperty('--mouse-x', `${x}px`);
+				card.style.setProperty('--mouse-y', `${y}px`);
+				ticking = false;
+			});
+			ticking = true;
+		}
+	});
+});
 
 		requestAnimationFrame(() => {
 			cards.forEach(card => {
