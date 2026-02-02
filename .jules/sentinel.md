@@ -18,7 +18,7 @@
 **Learning:** Refactoring inline styles to CSS classes allows removing `'unsafe-inline'`. However, ensuring the new classes override existing framework styles might require `!important` or higher specificity selectors when working with generated codebases like Mobirise.
 **Prevention:** Systematically replace inline styles with utility classes and verify visual regressions. Update CSP to remove `'unsafe-inline'` for `style-src`.
 
-## 2026-05-21 - CSP Refinement: HTTPS Enforcement & Data URI Minimization
-**Vulnerability:** Weak CSP allowing `data:` images (phishing vector) and mixed content.
-**Learning:** `upgrade-insecure-requests` in CSP meta tag effectively forces HTTPS for all resources, preventing mixed content issues. Removing `data:` from `img-src` reduces attack surface but requires verifying no inline images are used.
-**Prevention:** Include `upgrade-insecure-requests` in CSP. Audit codebase for `data:` images before removing `data:` from `img-src`.
+## 2026-03-01 - CSP Enhancements: HTTPS Upgrade & Data URI
+**Vulnerability:** Mixed content risks and potential data exfiltration via images.
+**Learning:** `upgrade-insecure-requests` is a powerful CSP directive supported in `<meta>` tags that transparently upgrades HTTP resource requests to HTTPS, mitigating mixed content on static sites. `img-src data:` is often default but unnecessary, and removing it hardens the site against potential data exfiltration vectors.
+**Prevention:** Audit `img-src` usage and remove `data:` if unused. Always include `upgrade-insecure-requests` in CSP for modern static sites.
