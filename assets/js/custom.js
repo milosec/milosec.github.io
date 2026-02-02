@@ -35,11 +35,18 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
+	const user = link.getAttribute('data-user');
+	const domain = link.getAttribute('data-domain');
+	const email = `${user}@${domain}`;
+
+	// Inject email content dynamically to prevent simple scraping
+	if (link.textContent.trim() !== email) {
+		link.textContent = email;
+	}
+
 	link.addEventListener('click', function (e) {
 		e.preventDefault();
-		const user = this.getAttribute('data-user');
-		const domain = this.getAttribute('data-domain');
-		window.location.href = `mailto:${user}@${domain}`;
+		window.location.href = `mailto:${email}`;
 	});
 });
 
