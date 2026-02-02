@@ -7,6 +7,18 @@ document.querySelectorAll('.card').forEach(card => {
 				const rect = card.getBoundingClientRect();
 				const x = e.clientX - rect.left;
 				const y = e.clientY - rect.top;
+// Optimized mousemove handling for cards
+// Uses scoped event listeners and requestAnimationFrame to prevent layout thrashing
+document.querySelectorAll('.card').forEach(card => {
+	let ticking = false;
+	card.addEventListener('mousemove', (e) => {
+		if (!ticking) {
+			const clientX = e.clientX;
+			const clientY = e.clientY;
+			window.requestAnimationFrame(() => {
+				const rect = card.getBoundingClientRect();
+				const x = clientX - rect.left;
+				const y = clientY - rect.top;
 				card.style.setProperty('--mouse-x', `${x}px`);
 				card.style.setProperty('--mouse-y', `${y}px`);
 				ticking = false;
@@ -16,23 +28,35 @@ document.querySelectorAll('.card').forEach(card => {
 	});
 });
 
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-	anchor.addEventListener('click', function (e) {
-		e.preventDefault();
-		document.querySelector(this.getAttribute('href')).scrollIntoView({
-			behavior: 'smooth'
+		requestAnimationFrame(() => {
+			cards.forEach(card => {
+				const rect = card.getBoundingClientRect();
+				const x = clientX - rect.left;
+				const y = clientY - rect.top;
+				card.style.setProperty('--mouse-x', `${x}px`);
+				card.style.setProperty('--mouse-y', `${y}px`);
+			});
+			ticking = false;
 		});
-	});
+
+		ticking = true;
+	}
 });
 
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
+	const user = link.getAttribute('data-user');
+	const domain = link.getAttribute('data-domain');
+	const email = `${user}@${domain}`;
+
+	// Inject email content dynamically to prevent simple scraping
+	if (link.textContent.trim() !== email) {
+		link.textContent = email;
+	}
+
 	link.addEventListener('click', function (e) {
 		e.preventDefault();
-		const user = this.getAttribute('data-user');
-		const domain = this.getAttribute('data-domain');
-		window.location.href = `mailto:${user}@${domain}`;
+		window.location.href = `mailto:${email}`;
 	});
 });
 

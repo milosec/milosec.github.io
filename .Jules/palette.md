@@ -15,3 +15,7 @@
 ## 2024-05-25 - Skip to Content Links
 **Learning:** Static site templates often omit "Skip to content" links, forcing keyboard users to tab through the entire navigation menu on every page load. This is a critical WCAG failure (2.4.1).
 **Action:** Always verify the presence of a skip link. If missing, inject an anchor tag immediately after `<body>` and target the main content container (e.g., `#main-content`) with a visually hidden, focus-visible utility class.
+
+## 2024-05-25 - Global Focus Styles
+**Learning:** Custom CSS resets or framework styles often suppress browser default focus rings. Adding a global `:focus-visible` style with `!important` ensures keyboard users always have a visual indicator, but requires careful checking of components with specific backgrounds (like skip links) to ensure contrast.
+**Action:** Implement global `:focus-visible` styles early, using the theme's accent color, and audit high-contrast areas (like dark headers) to provide specific overrides (e.g., white outline) where necessary.
