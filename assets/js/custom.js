@@ -23,16 +23,6 @@ document.addEventListener('mousemove', e => {
 	}
 });
 
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-	anchor.addEventListener('click', function (e) {
-		e.preventDefault();
-		document.querySelector(this.getAttribute('href')).scrollIntoView({
-			behavior: 'smooth'
-		});
-	});
-});
-
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
 	const user = link.getAttribute('data-user');
