@@ -210,8 +210,10 @@ ul {
     transition: color 0.3s ease;
 }
 
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-links a.active {
     color: var(--accent-primary);
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
 }
 
 /* Hero Section */

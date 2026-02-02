@@ -19,3 +19,7 @@
 ## 2024-05-26 - Dark Mode Focus Styles
 **Learning:** Dark mode sites often neglect focus states, making the default browser focus ring invisible against dark backgrounds.
 **Action:** Always ensure high-contrast focus styles (e.g., cyan/yellow on dark) are defined globally using `:focus-visible`.
+
+## 2024-05-27 - Orientation in One-Page Sites
+**Learning:** On long single-page sites, users often lose context of "where they are" relative to the navigation. Static links don't provide feedback.
+**Action:** Implement "ScrollSpy" functionality using `IntersectionObserver` to automatically highlight the active section in the navigation, providing constant orientation feedback without user interaction.
