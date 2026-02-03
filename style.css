@@ -525,6 +525,11 @@ footer {
     outline-offset: 4px;
 }
 
+/* Navigation Active State */
+.nav-links a.active {
+    color: var(--accent-primary);
+}
+
 html {
     scroll-padding-top: 100px;
 }
