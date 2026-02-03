@@ -12,21 +12,6 @@ document.querySelectorAll('.card').forEach(card => {
 	});
 });
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
-
-		ticking = true;
-	}
-});
-
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
 	const user = link.getAttribute('data-user');
@@ -74,3 +59,43 @@ if (menuToggle && navLinks) {
 		}
 	});
 }
+
+// ScrollSpy Implementation
+const sections = document.querySelectorAll('section[id]');
+const navLinksMap = new Map();
+document.querySelectorAll('.nav-links a').forEach(link => {
+	const href = link.getAttribute('href');
+	if (href && href.startsWith('#')) {
+		const id = href.substring(1);
+		navLinksMap.set(id, link);
+	}
+});
+
+const observerOptions = {
+	root: null,
+	rootMargin: '-50% 0px -50% 0px',
+	threshold: 0
+};
+
+const observer = new IntersectionObserver((entries) => {
+	entries.forEach(entry => {
+		if (entry.isIntersecting) {
+			const id = entry.target.id;
+
+			// Remove active class from all links
+			document.querySelectorAll('.nav-links a').forEach(link => {
+				link.classList.remove('active');
+				link.removeAttribute('aria-current');
+			});
+
+			// Add active class to current link
+			const activeLink = navLinksMap.get(id);
+			if (activeLink) {
+				activeLink.classList.add('active');
+				activeLink.setAttribute('aria-current', 'page');
+			}
+		}
+	});
+}, observerOptions);
+
+sections.forEach(section => observer.observe(section));
