@@ -22,3 +22,8 @@
 **Vulnerability:** Mixed content risks and potential data exfiltration via images.
 **Learning:** `upgrade-insecure-requests` is a powerful CSP directive supported in `<meta>` tags that transparently upgrades HTTP resource requests to HTTPS, mitigating mixed content on static sites. `img-src data:` is often default but unnecessary, and removing it hardens the site against potential data exfiltration vectors.
 **Prevention:** Audit `img-src` usage and remove `data:` if unused. Always include `upgrade-insecure-requests` in CSP for modern static sites.
+
+## 2026-03-15 - CSP: form-action and JS Availability
+**Vulnerability:** Missing `form-action` in CSP allows form hijacking; Syntax errors in JS compromise security features (Availability/Integrity).
+**Learning:** JS errors in utility scripts (like email obfuscation) fail silently but effectively deny service. `form-action` IS supported in meta tags and provides defense-in-depth against form injection.
+**Prevention:** Verify syntax of all JS assets. Add `form-action 'self'` to CSP meta tags.
