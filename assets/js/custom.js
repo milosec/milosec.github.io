@@ -1,30 +1,25 @@
 // Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
 document.querySelectorAll('.card').forEach(card => {
+	let ticking = false;
+	let clientX = 0;
+	let clientY = 0;
+
 	card.addEventListener('mousemove', e => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+		clientX = e.clientX;
+		clientY = e.clientY;
 
-		requestAnimationFrame(() => {
-			card.style.setProperty('--mouse-x', `${x}px`);
-			card.style.setProperty('--mouse-y', `${y}px`);
-		});
-	});
-});
-
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
+		if (!ticking) {
+			window.requestAnimationFrame(() => {
 				const rect = card.getBoundingClientRect();
 				const x = clientX - rect.left;
 				const y = clientY - rect.top;
 				card.style.setProperty('--mouse-x', `${x}px`);
 				card.style.setProperty('--mouse-y', `${y}px`);
+				ticking = false;
 			});
-			ticking = false;
-		});
-
-		ticking = true;
-	}
+			ticking = true;
+		}
+	});
 });
 
 // Email Obfuscation
