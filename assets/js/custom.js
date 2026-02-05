@@ -12,21 +12,6 @@ document.querySelectorAll('.card').forEach(card => {
 	});
 });
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
-
-		ticking = true;
-	}
-});
-
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
 	const user = link.getAttribute('data-user');
@@ -74,3 +59,30 @@ if (menuToggle && navLinks) {
 		}
 	});
 }
+
+// ScrollSpy Implementation
+const observerOptions = {
+	root: null,
+	rootMargin: '-50% 0px -50% 0px',
+	threshold: 0
+};
+
+const observer = new IntersectionObserver((entries) => {
+	entries.forEach(entry => {
+		if (entry.isIntersecting) {
+			const id = entry.target.getAttribute('id');
+			document.querySelectorAll('.nav-links a').forEach(link => {
+				link.classList.remove('active');
+				link.removeAttribute('aria-current');
+				if (link.getAttribute('href') === `#${id}`) {
+					link.classList.add('active');
+					link.setAttribute('aria-current', 'true');
+				}
+			});
+		}
+	});
+}, observerOptions);
+
+document.querySelectorAll('section[id]').forEach(section => {
+	observer.observe(section);
+});
