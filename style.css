@@ -214,6 +214,10 @@ ul {
     color: var(--accent-primary);
 }
 
+.nav-links a.active {
+    color: var(--accent-primary);
+}
+
 /* Hero Section */
 .hero-section {
     min-height: 100vh;
