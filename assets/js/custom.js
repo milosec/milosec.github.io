@@ -12,20 +12,33 @@ document.querySelectorAll('.card').forEach(card => {
 	});
 });
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
+// ScrollSpy Implementation
+const sections = document.querySelectorAll('section[id]');
+const navItems = document.querySelectorAll('.nav-links a');
 
-		ticking = true;
-	}
+const observer = new IntersectionObserver((entries) => {
+	entries.forEach(entry => {
+		if (entry.isIntersecting) {
+			// Remove active class from all
+			navItems.forEach(link => {
+				link.classList.remove('active');
+				link.removeAttribute('aria-current');
+			});
+
+			// Add active class to current
+			const id = entry.target.getAttribute('id');
+			const activeLink = document.querySelector(`.nav-links a[href="#${id}"]`);
+			if (activeLink) {
+				activeLink.classList.add('active');
+				activeLink.setAttribute('aria-current', 'true');
+			}
+		}
+	});
+}, {
+	rootMargin: '-50% 0px -50% 0px'
 });
+
+sections.forEach(section => observer.observe(section));
 
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
