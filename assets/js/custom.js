@@ -12,20 +12,6 @@ document.querySelectorAll('.card').forEach(card => {
 	});
 });
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
-
-		ticking = true;
-	}
-});
 
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
