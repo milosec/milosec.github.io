@@ -539,3 +539,9 @@ html {
     outline: 2px solid var(--accent-primary);
     outline-offset: 4px;
 }
+
+
+/* Active Navigation Link */
+.nav-links a.active {
+    color: var(--accent-primary);
+}

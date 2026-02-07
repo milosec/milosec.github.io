@@ -19,3 +19,11 @@
 ## 2024-05-26 - Dark Mode Focus Styles
 **Learning:** Dark mode sites often neglect focus states, making the default browser focus ring invisible against dark backgrounds.
 **Action:** Always ensure high-contrast focus styles (e.g., cyan/yellow on dark) are defined globally using `:focus-visible`.
+
+## 2024-05-27 - ScrollSpy Performance
+**Learning:** Implementing ScrollSpy via `scroll` event listeners causes layout thrashing. `IntersectionObserver` with `rootMargin: '-50% 0px -50% 0px'` provides a performant, declarative alternative that highlights the section currently in the center of the viewport.
+**Action:** Prefer `IntersectionObserver` over scroll listeners for visibility detection.
+
+## 2024-05-27 - JS Validation
+**Learning:** A single syntax error in a monolithic JS file can break critical navigation (e.g., mobile menu). Static analysis (linting or `node -c`) is essential before deployment.
+**Action:** Always run a syntax check on manual JS edits.
