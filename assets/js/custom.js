@@ -12,21 +12,6 @@ document.querySelectorAll('.card').forEach(card => {
 	});
 });
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
-
-		ticking = true;
-	}
-});
-
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
 	const user = link.getAttribute('data-user');
@@ -74,3 +59,32 @@ if (menuToggle && navLinks) {
 		}
 	});
 }
+
+// ScrollSpy
+const sections = document.querySelectorAll('section[id]');
+const navItems = document.querySelectorAll('.nav-links a');
+
+const observer = new IntersectionObserver((entries) => {
+	entries.forEach(entry => {
+		if (entry.isIntersecting) {
+			const id = entry.target.getAttribute('id');
+			// Remove active class from all links
+			navItems.forEach(link => {
+				link.classList.remove('active');
+				link.removeAttribute('aria-current');
+			});
+			// Add active class to the link corresponding to the visible section
+			const activeLink = document.querySelector(`.nav-links a[href="#${id}"]`);
+			if (activeLink) {
+				activeLink.classList.add('active');
+				activeLink.setAttribute('aria-current', 'page');
+			}
+		}
+	});
+}, {
+	rootMargin: "-50% 0px -50% 0px" // Trigger when the section crosses the middle of the viewport
+});
+
+sections.forEach(section => {
+	observer.observe(section);
+});
