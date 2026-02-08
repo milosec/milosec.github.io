@@ -19,3 +19,7 @@
 ## 2024-05-26 - Dark Mode Focus Styles
 **Learning:** Dark mode sites often neglect focus states, making the default browser focus ring invisible against dark backgrounds.
 **Action:** Always ensure high-contrast focus styles (e.g., cyan/yellow on dark) are defined globally using `:focus-visible`.
+
+## 2024-05-27 - Code Review False Positives on Broken Code
+**Learning:** When removing a large block of malformed/broken code, automated or human reviewers might flag it as a "regression" or "accidental deletion" if they don't notice the syntax errors (e.g., missing variable declarations, unmatched braces).
+**Action:** When cleaning up broken code, ensure the commit message or PR description explicitly states that the removed code was malformed and dead, perhaps pointing out specific syntax errors (e.g., "Removed broken code block with unmatched braces and undefined variables").
