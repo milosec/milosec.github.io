@@ -22,3 +22,8 @@
 **Vulnerability:** Mixed content risks and potential data exfiltration via images.
 **Learning:** `upgrade-insecure-requests` is a powerful CSP directive supported in `<meta>` tags that transparently upgrades HTTP resource requests to HTTPS, mitigating mixed content on static sites. `img-src data:` is often default but unnecessary, and removing it hardens the site against potential data exfiltration vectors.
 **Prevention:** Audit `img-src` usage and remove `data:` if unused. Always include `upgrade-insecure-requests` in CSP for modern static sites.
+
+## 2026-05-23 - JS Availability & Syntax Validation
+**Vulnerability:** Broken JavaScript syntax (orphaned code) caused a silent Denial of Service for the email obfuscation feature, preventing users from accessing contact info.
+**Learning:** Manual edits to `assets/js/custom.js` in a static site without a build pipeline can introduce syntax errors that break critical functionality (Availability).
+**Prevention:** Establish a pre-commit check or local validation step (e.g., `node -c`) for manually edited JS files to ensure syntax integrity before deployment.
