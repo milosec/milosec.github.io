@@ -12,21 +12,6 @@ document.querySelectorAll('.card').forEach(card => {
 	});
 });
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
-
-		ticking = true;
-	}
-});
-
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
 	const user = link.getAttribute('data-user');
@@ -65,12 +50,26 @@ if (menuToggle && navLinks) {
 		});
 	});
 
-	// Reset on resize
-	window.addEventListener('resize', () => {
-		if (window.innerWidth > 768) {
-			menuToggle.setAttribute('aria-expanded', 'false');
-			navLinks.classList.remove('active');
-			document.body.style.overflow = '';
-		}
-	});
+	// Reset on resize - optimized with matchMedia to avoid layout thrashing
+	const mediaQuery = window.matchMedia('(min-width: 769px)');
+
+	// Use modern event listener
+	try {
+		mediaQuery.addEventListener('change', (e) => {
+			if (e.matches) {
+				menuToggle.setAttribute('aria-expanded', 'false');
+				navLinks.classList.remove('active');
+				document.body.style.overflow = '';
+			}
+		});
+	} catch (e) {
+		// Fallback for older browsers (though unlikely needed for this project)
+		mediaQuery.addListener((e) => {
+			if (e.matches) {
+				menuToggle.setAttribute('aria-expanded', 'false');
+				navLinks.classList.remove('active');
+				document.body.style.overflow = '';
+			}
+		});
+	}
 }
