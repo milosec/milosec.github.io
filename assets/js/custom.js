@@ -1,30 +1,26 @@
 // Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
 document.querySelectorAll('.card').forEach(card => {
-	card.addEventListener('mousemove', e => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+    let ticking = false;
+    let lastX = 0;
+    let lastY = 0;
 
-		requestAnimationFrame(() => {
-			card.style.setProperty('--mouse-x', `${x}px`);
-			card.style.setProperty('--mouse-y', `${y}px`);
-		});
-	});
-});
+    card.addEventListener('mousemove', e => {
+        lastX = e.clientX;
+        lastY = e.clientY;
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const rect = card.getBoundingClientRect();
+                const x = lastX - rect.left;
+                const y = lastY - rect.top;
 
-		ticking = true;
-	}
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
 });
 
 // Email Obfuscation
@@ -43,6 +39,15 @@ document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
 		window.location.href = `mailto:${email}`;
 	});
 });
+
+// Utility: Debounce function
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
 
 // Mobile Menu Toggle
 const menuToggle = document.querySelector('.mobile-menu-toggle');
@@ -65,12 +70,12 @@ if (menuToggle && navLinks) {
 		});
 	});
 
-	// Reset on resize
-	window.addEventListener('resize', () => {
+	// Reset on resize (Debounced)
+	window.addEventListener('resize', debounce(() => {
 		if (window.innerWidth > 768) {
 			menuToggle.setAttribute('aria-expanded', 'false');
 			navLinks.classList.remove('active');
 			document.body.style.overflow = '';
 		}
-	});
+	}, 200));
 }
