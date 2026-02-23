@@ -1,31 +1,40 @@
 // Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
 document.querySelectorAll('.card').forEach(card => {
+	let ticking = false;
+	let clientX = 0;
+	let clientY = 0;
+
 	card.addEventListener('mousemove', e => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+		clientX = e.clientX;
+		clientY = e.clientY;
 
-		requestAnimationFrame(() => {
-			card.style.setProperty('--mouse-x', `${x}px`);
-			card.style.setProperty('--mouse-y', `${y}px`);
-		});
-	});
-});
-
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
+		if (!ticking) {
+			window.requestAnimationFrame(() => {
 				const rect = card.getBoundingClientRect();
 				const x = clientX - rect.left;
 				const y = clientY - rect.top;
 				card.style.setProperty('--mouse-x', `${x}px`);
 				card.style.setProperty('--mouse-y', `${y}px`);
+				ticking = false;
 			});
-			ticking = false;
-		});
 
-		ticking = true;
-	}
+			ticking = true;
+		}
+	});
 });
+
+// Utility function: Debounce
+function debounce(func, wait) {
+	let timeout;
+	return function executedFunction(...args) {
+		const later = () => {
+			clearTimeout(timeout);
+			func(...args);
+		};
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+	};
+}
 
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
@@ -65,12 +74,12 @@ if (menuToggle && navLinks) {
 		});
 	});
 
-	// Reset on resize
-	window.addEventListener('resize', () => {
+	// Reset on resize (debounced)
+	window.addEventListener('resize', debounce(() => {
 		if (window.innerWidth > 768) {
 			menuToggle.setAttribute('aria-expanded', 'false');
 			navLinks.classList.remove('active');
 			document.body.style.overflow = '';
 		}
-	});
+	}, 200));
 }
