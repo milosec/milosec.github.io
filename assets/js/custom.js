@@ -1,3 +1,21 @@
+/**
+ * Debounce function to limit the rate at which a function can fire.
+ * @param {Function} func - The function to debounce.
+ * @param {number} wait - The delay in milliseconds.
+ * @returns {Function} - The debounced function.
+ */
+function debounce(func, wait) {
+	let timeout;
+	return function executedFunction(...args) {
+		const later = () => {
+			clearTimeout(timeout);
+			func(...args);
+		};
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+	};
+}
+
 // Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
 document.querySelectorAll('.card').forEach(card => {
 	card.addEventListener('mousemove', e => {
@@ -10,21 +28,6 @@ document.querySelectorAll('.card').forEach(card => {
 			card.style.setProperty('--mouse-y', `${y}px`);
 		});
 	});
-});
-
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
-
-		ticking = true;
-	}
 });
 
 // Email Obfuscation
@@ -65,12 +68,12 @@ if (menuToggle && navLinks) {
 		});
 	});
 
-	// Reset on resize
-	window.addEventListener('resize', () => {
+	// Reset on resize (Debounced)
+	window.addEventListener('resize', debounce(() => {
 		if (window.innerWidth > 768) {
 			menuToggle.setAttribute('aria-expanded', 'false');
 			navLinks.classList.remove('active');
 			document.body.style.overflow = '';
 		}
-	});
+	}, 200));
 }
