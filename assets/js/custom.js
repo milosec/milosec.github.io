@@ -12,21 +12,6 @@ document.querySelectorAll('.card').forEach(card => {
 	});
 });
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
-
-		ticking = true;
-	}
-});
-
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
 	const user = link.getAttribute('data-user');
@@ -65,12 +50,20 @@ if (menuToggle && navLinks) {
 		});
 	});
 
-	// Reset on resize
-	window.addEventListener('resize', () => {
-		if (window.innerWidth > 768) {
+	// Reset on resize using matchMedia for better performance
+	const mediaQuery = window.matchMedia('(min-width: 769px)');
+
+	function handleBreakpointChange(e) {
+		if (e.matches) {
 			menuToggle.setAttribute('aria-expanded', 'false');
 			navLinks.classList.remove('active');
 			document.body.style.overflow = '';
 		}
-	});
+	}
+
+	// Listen for changes
+	mediaQuery.addEventListener('change', handleBreakpointChange);
+
+	// Check initial state
+	handleBreakpointChange(mediaQuery);
 }
