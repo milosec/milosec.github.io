@@ -1,30 +1,33 @@
 // Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
 document.querySelectorAll('.card').forEach(card => {
-	card.addEventListener('mousemove', e => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+	let rect = null;
+	let ticking = false;
 
-		requestAnimationFrame(() => {
-			card.style.setProperty('--mouse-x', `${x}px`);
-			card.style.setProperty('--mouse-y', `${y}px`);
-		});
+	card.addEventListener('mouseenter', () => {
+		rect = card.getBoundingClientRect();
 	});
-});
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
+	card.addEventListener('mouseleave', () => {
+		rect = null;
+	});
+
+	card.addEventListener('mousemove', e => {
+		if (!rect) {
+			rect = card.getBoundingClientRect();
+		}
+
+		if (!ticking) {
+			const x = e.pageX - rect.left - window.scrollX;
+			const y = e.pageY - rect.top - window.scrollY;
+
+			requestAnimationFrame(() => {
 				card.style.setProperty('--mouse-x', `${x}px`);
 				card.style.setProperty('--mouse-y', `${y}px`);
+				ticking = false;
 			});
-			ticking = false;
-		});
-
-		ticking = true;
-	}
+			ticking = true;
+		}
+	});
 });
 
 // Email Obfuscation
