@@ -1,30 +1,35 @@
 // Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
 document.querySelectorAll('.card').forEach(card => {
-	card.addEventListener('mousemove', e => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+	let ticking = false;
+	let rect = null;
 
+	card.addEventListener('mouseenter', () => {
+		// Cache document-relative bounding rect to prevent layout thrashing on mousemove
+		const bounds = card.getBoundingClientRect();
+		rect = {
+			top: bounds.top + window.scrollY,
+			left: bounds.left + window.scrollX
+		};
+	});
+
+	card.addEventListener('mouseleave', () => {
+		rect = null;
+	});
+
+	card.addEventListener('mousemove', e => {
+		if (!rect || ticking) return;
+
+		// Calculate mouse position relative to the document-relative bounding rect
+		const x = e.pageX - rect.left;
+		const y = e.pageY - rect.top;
+
+		ticking = true;
 		requestAnimationFrame(() => {
 			card.style.setProperty('--mouse-x', `${x}px`);
 			card.style.setProperty('--mouse-y', `${y}px`);
-		});
-	});
-});
-
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
 			ticking = false;
 		});
-
-		ticking = true;
-	}
+	});
 });
 
 // Email Obfuscation
@@ -65,9 +70,10 @@ if (menuToggle && navLinks) {
 		});
 	});
 
-	// Reset on resize
-	window.addEventListener('resize', () => {
-		if (window.innerWidth > 768) {
+	// Reset on resize using matchMedia to prevent layout thrashing
+	const mediaQuery = window.matchMedia('(min-width: 769px)');
+	mediaQuery.addEventListener('change', (e) => {
+		if (e.matches) {
 			menuToggle.setAttribute('aria-expanded', 'false');
 			navLinks.classList.remove('active');
 			document.body.style.overflow = '';
