@@ -1,30 +1,31 @@
 // Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
+// Caches bounds on mouseenter to prevent layout thrashing and uses a ticking lock for requestAnimationFrame
 document.querySelectorAll('.card').forEach(card => {
-	card.addEventListener('mousemove', e => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+	let rectLeft = 0;
+	let rectTop = 0;
+	let ticking = false;
+	let currentX = 0;
+	let currentY = 0;
 
-		requestAnimationFrame(() => {
-			card.style.setProperty('--mouse-x', `${x}px`);
-			card.style.setProperty('--mouse-y', `${y}px`);
-		});
+	card.addEventListener('mouseenter', () => {
+		const bounds = card.getBoundingClientRect();
+		rectLeft = bounds.left + window.scrollX;
+		rectTop = bounds.top + window.scrollY;
 	});
-});
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
+	card.addEventListener('mousemove', e => {
+		currentX = e.pageX - rectLeft;
+		currentY = e.pageY - rectTop;
+
+		if (!ticking) {
+			requestAnimationFrame(() => {
+				card.style.setProperty('--mouse-x', `${currentX}px`);
+				card.style.setProperty('--mouse-y', `${currentY}px`);
+				ticking = false;
 			});
-			ticking = false;
-		});
-
-		ticking = true;
-	}
+			ticking = true;
+		}
+	});
 });
 
 // Email Obfuscation
@@ -65,9 +66,10 @@ if (menuToggle && navLinks) {
 		});
 	});
 
-	// Reset on resize
-	window.addEventListener('resize', () => {
-		if (window.innerWidth > 768) {
+	// Reset when crossing the desktop breakpoint
+	const mediaQuery = window.matchMedia('(min-width: 769px)');
+	mediaQuery.addEventListener('change', (e) => {
+		if (e.matches) {
 			menuToggle.setAttribute('aria-expanded', 'false');
 			navLinks.classList.remove('active');
 			document.body.style.overflow = '';
