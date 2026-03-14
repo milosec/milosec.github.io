@@ -1,30 +1,32 @@
 // Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
 document.querySelectorAll('.card').forEach(card => {
-	card.addEventListener('mousemove', e => {
+	let rectTop, rectLeft, ticking = false;
+
+	// Cache document-relative coordinates on hover to avoid layout thrashing during mousemove
+	card.addEventListener('mouseenter', () => {
 		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
-
-		requestAnimationFrame(() => {
-			card.style.setProperty('--mouse-x', `${x}px`);
-			card.style.setProperty('--mouse-y', `${y}px`);
-		});
+		rectTop = rect.top + window.scrollY;
+		rectLeft = rect.left + window.scrollX;
 	});
-});
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
+	card.addEventListener('mousemove', e => {
+		if (rectTop === undefined || rectLeft === undefined) {
+			const rect = card.getBoundingClientRect();
+			rectTop = rect.top + window.scrollY;
+			rectLeft = rect.left + window.scrollX;
+		}
+
+		if (!ticking) {
+			requestAnimationFrame(() => {
+				const x = e.pageX - rectLeft;
+				const y = e.pageY - rectTop;
 				card.style.setProperty('--mouse-x', `${x}px`);
 				card.style.setProperty('--mouse-y', `${y}px`);
+				ticking = false;
 			});
-			ticking = false;
-		});
-
-		ticking = true;
-	}
+			ticking = true;
+		}
+	});
 });
 
 // Email Obfuscation
