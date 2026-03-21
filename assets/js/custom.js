@@ -1,30 +1,37 @@
 // Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
 document.querySelectorAll('.card').forEach(card => {
-	card.addEventListener('mousemove', e => {
+	let cardX = 0;
+	let cardY = 0;
+	let initialized = false;
+	let ticking = false;
+
+	const initCoords = () => {
 		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+		cardX = rect.left + window.scrollX;
+		cardY = rect.top + window.scrollY;
+		initialized = true;
+	};
 
-		requestAnimationFrame(() => {
-			card.style.setProperty('--mouse-x', `${x}px`);
-			card.style.setProperty('--mouse-y', `${y}px`);
-		});
-	});
-});
+	card.addEventListener('mouseenter', initCoords);
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
+	card.addEventListener('mousemove', e => {
+		if (!initialized) initCoords();
+
+		if (!ticking) {
+			requestAnimationFrame(() => {
+				const x = e.pageX - cardX;
+				const y = e.pageY - cardY;
 				card.style.setProperty('--mouse-x', `${x}px`);
 				card.style.setProperty('--mouse-y', `${y}px`);
+				ticking = false;
 			});
-			ticking = false;
-		});
+			ticking = true;
+		}
+	});
 
-		ticking = true;
-	}
+	card.addEventListener('mouseleave', () => {
+		initialized = false;
+	});
 });
 
 // Email Obfuscation
@@ -65,9 +72,10 @@ if (menuToggle && navLinks) {
 		});
 	});
 
-	// Reset on resize
-	window.addEventListener('resize', () => {
-		if (window.innerWidth > 768) {
+	// Reset on resize via matchMedia to improve performance
+	const mediaQuery = window.matchMedia('(min-width: 769px)');
+	mediaQuery.addEventListener('change', (e) => {
+		if (e.matches) {
 			menuToggle.setAttribute('aria-expanded', 'false');
 			navLinks.classList.remove('active');
 			document.body.style.overflow = '';
