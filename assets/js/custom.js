@@ -1,30 +1,38 @@
-// Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
+// Optimized spotlight effect: Listeners attached to cards only, layout metrics cached on mouseenter, and updates throttled via requestAnimationFrame
 document.querySelectorAll('.card').forEach(card => {
-	card.addEventListener('mousemove', e => {
+	let docLeft = null;
+	let docTop = null;
+	let ticking = false;
+
+	card.addEventListener('mouseenter', () => {
 		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
-
-		requestAnimationFrame(() => {
-			card.style.setProperty('--mouse-x', `${x}px`);
-			card.style.setProperty('--mouse-y', `${y}px`);
-		});
+		docLeft = rect.left + (window.pageXOffset || document.documentElement.scrollLeft);
+		docTop = rect.top + (window.pageYOffset || document.documentElement.scrollTop);
 	});
-});
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
+	card.addEventListener('mousemove', e => {
+		if (docLeft === null || docTop === null) {
+			const rect = card.getBoundingClientRect();
+			docLeft = rect.left + (window.pageXOffset || document.documentElement.scrollLeft);
+			docTop = rect.top + (window.pageYOffset || document.documentElement.scrollTop);
+		}
+
+		if (!ticking) {
+			requestAnimationFrame(() => {
+				const x = e.pageX - docLeft;
+				const y = e.pageY - docTop;
 				card.style.setProperty('--mouse-x', `${x}px`);
 				card.style.setProperty('--mouse-y', `${y}px`);
+				ticking = false;
 			});
-			ticking = false;
-		});
+			ticking = true;
+		}
+	});
 
-		ticking = true;
-	}
+	card.addEventListener('mouseleave', () => {
+		docLeft = null;
+		docTop = null;
+	});
 });
 
 // Email Obfuscation
