@@ -137,6 +137,7 @@ ul {
     opacity: 0.4;
     border-radius: 50%;
     animation: float 20s infinite ease-in-out;
+    will-change: transform; /* Offload heavy blur animation to GPU */
 }
 
 .blob-1 {
