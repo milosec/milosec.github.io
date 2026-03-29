@@ -1,9 +1,29 @@
-// Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
-document.querySelectorAll('.card').forEach(card => {
+// Optimized spotlight effect: Listeners attached to cards only, caching coordinates on mouseenter/resize to prevent layout thrashing
+const cards = document.querySelectorAll('.card');
+const cardCoords = new WeakMap();
+
+function updateCardCoords(card) {
+	const rect = card.getBoundingClientRect();
+	cardCoords.set(card, {
+		left: rect.left + (window.scrollX || window.pageXOffset),
+		top: rect.top + (window.scrollY || window.pageYOffset)
+	});
+}
+
+cards.forEach(card => {
+	card.addEventListener('mouseenter', () => {
+		updateCardCoords(card);
+	});
+
 	card.addEventListener('mousemove', e => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+		if (!cardCoords.has(card)) {
+			updateCardCoords(card);
+		}
+
+		const coords = cardCoords.get(card);
+
+		const x = e.pageX - coords.left;
+		const y = e.pageY - coords.top;
 
 		requestAnimationFrame(() => {
 			card.style.setProperty('--mouse-x', `${x}px`);
@@ -12,20 +32,15 @@ document.querySelectorAll('.card').forEach(card => {
 	});
 });
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
+const resizeHandler = () => {
+	cards.forEach(card => updateCardCoords(card));
+};
 
-		ticking = true;
-	}
-});
+if (typeof window.smartresize === 'function') {
+	window.smartresize(resizeHandler);
+} else {
+	window.addEventListener('resize', resizeHandler);
+}
 
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
