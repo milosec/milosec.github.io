@@ -1,9 +1,28 @@
-// Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
+// Optimized spotlight effect: Cache coordinates to prevent layout thrashing
+const cardCache = new WeakMap();
+
+const updateCardCache = (card) => {
+	const rect = card.getBoundingClientRect();
+	cardCache.set(card, {
+		left: rect.left + window.scrollX,
+		top: rect.top + window.scrollY
+	});
+};
+
 document.querySelectorAll('.card').forEach(card => {
+	// Cache coordinates when the mouse enters the card
+	card.addEventListener('mouseenter', () => updateCardCache(card));
+
 	card.addEventListener('mousemove', e => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+		let cached = cardCache.get(card);
+		if (!cached) {
+			updateCardCache(card);
+			cached = cardCache.get(card);
+		}
+
+		// Calculate relative position using page coordinates to avoid layout thrashing
+		const x = e.pageX - cached.left;
+		const y = e.pageY - cached.top;
 
 		requestAnimationFrame(() => {
 			card.style.setProperty('--mouse-x', `${x}px`);
@@ -12,20 +31,25 @@ document.querySelectorAll('.card').forEach(card => {
 	});
 });
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
+// Update cache on resize to ensure coordinates remain accurate
+if (typeof window.smartresize === 'function') {
+	window.smartresize(() => {
+		document.querySelectorAll('.card').forEach(card => {
+			if (card.matches(':hover')) {
+				updateCardCache(card);
+			}
 		});
+	});
+} else {
+	window.addEventListener('resize', () => {
+		document.querySelectorAll('.card').forEach(card => {
+			if (card.matches(':hover')) {
+				updateCardCache(card);
+			}
+		});
+	});
+}
 
-		ticking = true;
-	}
-});
 
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
