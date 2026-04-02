@@ -1,9 +1,23 @@
 // Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
+const cardCache = new WeakMap();
+
+function updateCardCache(card) {
+	const rect = card.getBoundingClientRect();
+	cardCache.set(card, {
+		left: rect.left + window.scrollX,
+		top: rect.top + window.scrollY,
+	});
+}
+
 document.querySelectorAll('.card').forEach(card => {
+	card.addEventListener('mouseenter', () => updateCardCache(card));
+
 	card.addEventListener('mousemove', e => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+		const cached = cardCache.get(card);
+		if (!cached) return;
+
+		const x = e.pageX - cached.left;
+		const y = e.pageY - cached.top;
 
 		requestAnimationFrame(() => {
 			card.style.setProperty('--mouse-x', `${x}px`);
@@ -12,19 +26,12 @@ document.querySelectorAll('.card').forEach(card => {
 	});
 });
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
-
-		ticking = true;
-	}
+window.addEventListener('resize', () => {
+    document.querySelectorAll('.card').forEach(card => {
+        if (cardCache.has(card)) {
+            updateCardCache(card);
+        }
+    });
 });
 
 // Email Obfuscation
