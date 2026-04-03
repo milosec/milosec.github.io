@@ -1,9 +1,24 @@
-// Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
+// Optimized spotlight effect: Cache coordinates to avoid layout thrashing on mousemove
+const cardCoords = new WeakMap();
+
+function updateCardCoords(card) {
+	const rect = card.getBoundingClientRect();
+	cardCoords.set(card, {
+		left: rect.left + window.scrollX,
+		top: rect.top + window.scrollY
+	});
+}
+
 document.querySelectorAll('.card').forEach(card => {
+	card.addEventListener('mouseenter', () => updateCardCoords(card));
+
 	card.addEventListener('mousemove', e => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+		const coords = cardCoords.get(card);
+		if (!coords) return;
+
+		// O(1) calculations using pageX/pageY and cached absolute coordinates
+		const x = e.pageX - coords.left;
+		const y = e.pageY - coords.top;
 
 		requestAnimationFrame(() => {
 			card.style.setProperty('--mouse-x', `${x}px`);
@@ -12,20 +27,17 @@ document.querySelectorAll('.card').forEach(card => {
 	});
 });
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
+// Update cached coordinates on resize if a card is currently hovered
+const updateHoveredCardCoords = () => {
+	const hoveredCard = document.querySelector('.card:hover');
+	if (hoveredCard) updateCardCoords(hoveredCard);
+};
 
-		ticking = true;
-	}
-});
+if (window.smartresize) {
+	window.smartresize(updateHoveredCardCoords);
+} else {
+	window.addEventListener('resize', updateHoveredCardCoords);
+}
 
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
@@ -65,9 +77,10 @@ if (menuToggle && navLinks) {
 		});
 	});
 
-	// Reset on resize
-	window.addEventListener('resize', () => {
-		if (window.innerWidth > 768) {
+	// Reset on resize using matchMedia for better performance
+	const mediaQuery = window.matchMedia('(min-width: 769px)');
+	mediaQuery.addEventListener('change', (e) => {
+		if (e.matches) {
 			menuToggle.setAttribute('aria-expanded', 'false');
 			navLinks.classList.remove('active');
 			document.body.style.overflow = '';
