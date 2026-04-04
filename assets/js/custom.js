@@ -1,30 +1,38 @@
-// Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
+// Optimized spotlight effect: Cache coordinates and throttle visual updates
 document.querySelectorAll('.card').forEach(card => {
-	card.addEventListener('mousemove', e => {
+	let cachedRect = null;
+	let ticking = false;
+
+	const updateRect = () => {
 		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+		cachedRect = {
+			left: rect.left + window.scrollX,
+			top: rect.top + window.scrollY
+		};
+	};
 
-		requestAnimationFrame(() => {
-			card.style.setProperty('--mouse-x', `${x}px`);
-			card.style.setProperty('--mouse-y', `${y}px`);
-		});
-	});
-});
+	card.addEventListener('mouseenter', updateRect);
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
+	if (typeof window.smartresize === 'function') {
+		window.smartresize(updateRect);
+	} else {
+		window.addEventListener('resize', updateRect);
+	}
+
+	card.addEventListener('mousemove', e => {
+		if (!cachedRect) updateRect();
+
+		if (!ticking) {
+			requestAnimationFrame(() => {
+				const x = e.pageX - cachedRect.left;
+				const y = e.pageY - cachedRect.top;
 				card.style.setProperty('--mouse-x', `${x}px`);
 				card.style.setProperty('--mouse-y', `${y}px`);
+				ticking = false;
 			});
-			ticking = false;
-		});
-
-		ticking = true;
-	}
+			ticking = true;
+		}
+	});
 });
 
 // Email Obfuscation
