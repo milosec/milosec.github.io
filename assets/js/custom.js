@@ -1,31 +1,53 @@
-// Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
-document.querySelectorAll('.card').forEach(card => {
-	card.addEventListener('mousemove', e => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+// Optimized spotlight effect: Prevents layout thrashing by caching coordinates on mouseenter/resize
+const cardCache = new WeakMap();
 
-		requestAnimationFrame(() => {
-			card.style.setProperty('--mouse-x', `${x}px`);
-			card.style.setProperty('--mouse-y', `${y}px`);
-		});
+function updateCardCache(card) {
+	const rect = card.getBoundingClientRect();
+	cardCache.set(card, {
+		left: rect.left + window.scrollX,
+		top: rect.top + window.scrollY,
+		ticking: false
+	});
+}
+
+document.querySelectorAll('.card').forEach(card => {
+	card.addEventListener('mouseenter', () => {
+		updateCardCache(card);
+	});
+
+	card.addEventListener('mousemove', e => {
+		let data = cardCache.get(card);
+		if (!data) {
+			updateCardCache(card);
+			data = cardCache.get(card);
+		}
+
+		if (!data.ticking) {
+			data.ticking = true;
+			requestAnimationFrame(() => {
+				const x = e.pageX - data.left;
+				const y = e.pageY - data.top;
+				card.style.setProperty('--mouse-x', `${x}px`);
+				card.style.setProperty('--mouse-y', `${y}px`);
+				data.ticking = false;
+			});
+		}
 	});
 });
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
+const resizeHandler = () => {
+	document.querySelectorAll('.card').forEach(card => {
+		if (cardCache.has(card)) {
+			updateCardCache(card);
+		}
+	});
+};
 
-		ticking = true;
-	}
-});
+if (window.smartresize) {
+	window.smartresize(resizeHandler);
+} else {
+	window.addEventListener('resize', resizeHandler);
+}
 
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
