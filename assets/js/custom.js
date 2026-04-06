@@ -1,31 +1,54 @@
 // Optimized spotlight effect: Listeners attached to cards only, and updates throttled via requestAnimationFrame
-document.querySelectorAll('.card').forEach(card => {
-	card.addEventListener('mousemove', e => {
-		const rect = card.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
+const cardRects = new WeakMap();
 
-		requestAnimationFrame(() => {
-			card.style.setProperty('--mouse-x', `${x}px`);
-			card.style.setProperty('--mouse-y', `${y}px`);
-		});
+function updateCardRect(card) {
+	const rect = card.getBoundingClientRect();
+	cardRects.set(card, {
+		left: rect.left + window.scrollX,
+		top: rect.top + window.scrollY
+	});
+}
+
+document.querySelectorAll('.card').forEach(card => {
+	let ticking = false;
+
+	card.addEventListener('mouseenter', () => {
+		if (!cardRects.has(card)) {
+			updateCardRect(card);
+		}
+	});
+
+	card.addEventListener('mousemove', e => {
+		if (!ticking) {
+			window.requestAnimationFrame(() => {
+				const rect = cardRects.get(card);
+				if (rect) {
+					const x = e.pageX - rect.left;
+					const y = e.pageY - rect.top;
+					card.style.setProperty('--mouse-x', `${x}px`);
+					card.style.setProperty('--mouse-y', `${y}px`);
+				}
+				ticking = false;
+			});
+			ticking = true;
+		}
 	});
 });
 
-		requestAnimationFrame(() => {
-			cards.forEach(card => {
-				const rect = card.getBoundingClientRect();
-				const x = clientX - rect.left;
-				const y = clientY - rect.top;
-				card.style.setProperty('--mouse-x', `${x}px`);
-				card.style.setProperty('--mouse-y', `${y}px`);
-			});
-			ticking = false;
-		});
+// Update cached rects on resize
+const updateAllRects = () => {
+	document.querySelectorAll('.card').forEach(card => {
+		if (cardRects.has(card)) {
+			updateCardRect(card);
+		}
+	});
+};
 
-		ticking = true;
-	}
-});
+if (typeof window.smartresize === 'function') {
+	window.smartresize(updateAllRects);
+} else {
+	window.addEventListener('resize', updateAllRects);
+}
 
 // Email Obfuscation
 document.querySelectorAll('a[data-user][data-domain]').forEach(link => {
@@ -65,9 +88,10 @@ if (menuToggle && navLinks) {
 		});
 	});
 
-	// Reset on resize
-	window.addEventListener('resize', () => {
-		if (window.innerWidth > 768) {
+	// Reset on resize (only triggered when crossing breakpoint)
+	const mql = window.matchMedia('(min-width: 769px)');
+	mql.addEventListener('change', (e) => {
+		if (e.matches) {
 			menuToggle.setAttribute('aria-expanded', 'false');
 			navLinks.classList.remove('active');
 			document.body.style.overflow = '';
